@@ -85,5 +85,34 @@
         <value>60030</value>
         <description>设置端口，避免重启之后端口发生变化         </description>
     </property>
-
+    <property>
+        <name>hbase.zookeeper.property.dataDir</name>
+        <value>/Users/db/code/paper-experiments/hbase-data/zookeeper-data/</value>
+    </property>
+    <property>
+        <name>zookeeper.session.timeout</name>
+        <value>3600000</value>
+        <description>将zk timeout  设置大，避免在debug过程中出现timeout，影响调试。   </description>
+      </property>
+    <property>
+        <name>zookeeper.session.timeout.localHBaseCluster</name>
+        <value>3600000</value>
+        <description>
+            设置本地zk timeout时间，
+            本地模式HMasterCommandLine类中的startMaster方法会将zookeeper.session.timeout.localHBaseCluster设置给zookeeper.session.timeout
+        </description>
+    </property>
+  <property>
+    <name>hbase.zookeeper.property.tickTime</name>
+    <value>180000</value>
+  </property>
+  <property>
+    <name>hbase.hregion.memstore.flush.size</name>
+    <value>134217728</value>
+    <description>Byte</description>
+  </property>
+  <property>
+    <name>hbase.ipc.max.request.size</name>
+    <value>536870912</value>
+  </property>
 </configuration>

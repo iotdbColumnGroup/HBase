@@ -150,6 +150,13 @@ public class DefaultMemStore extends AbstractMemStore {
     return list;
   }
 
+  public List<Segment> getSegmentsForGrouping() throws IOException {
+    List<Segment> list = new ArrayList<>(2);
+    list.add(getActive());
+    list.add(snapshot);
+    return list;
+  }
+
   /**
    * @param cell Find the row that comes after this one. If null, we return the first.
    * @return Next row or null if none found.

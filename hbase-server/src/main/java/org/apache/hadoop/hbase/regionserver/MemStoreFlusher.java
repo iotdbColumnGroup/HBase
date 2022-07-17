@@ -116,7 +116,8 @@ class MemStoreFlusher implements FlushRequester {
     this.server = server;
     this.threadWakeFrequency = conf.getLong(HConstants.THREAD_WAKE_FREQUENCY, 10 * 1000);
     this.blockingWaitTime = conf.getInt("hbase.hstore.blockingWaitTime", 90000);
-    int handlerCount = conf.getInt("hbase.hstore.flusher.count", 2);
+//    int handlerCount = conf.getInt("hbase.hstore.flusher.count", 2);
+    int handlerCount = conf.getInt("hbase.hstore.flusher.count", 1);
     if (handlerCount < 1) {
       LOG.warn("hbase.hstore.flusher.count was configed to {} which is less than 1, corrected to 1",
         handlerCount);
@@ -528,6 +529,7 @@ class MemStoreFlusher implements FlushRequester {
    * there will be accompanying log messages explaining why the region was not flushed.
    */
   private boolean flushRegion(final FlushRegionEntry fqe) {
+    LOG.info("**********flush invoked***********");
     HRegion region = fqe.region;
     if (!region.getRegionInfo().isMetaRegion() && isTooManyStoreFiles(region)) {
       if (fqe.isMaximumWait(this.blockingWaitTime)) {

@@ -18,6 +18,8 @@
 package org.apache.hadoop.hbase.regionserver;
 
 import static org.apache.hadoop.hbase.HConstants.REPLICATION_SCOPE_LOCAL;
+import static org.apache.hadoop.hbase.master.FlushApprGroupingEngine.groupingAppr;
+import static org.apache.hadoop.hbase.regionserver.FlushGroupingEngine.grouping;
 import static org.apache.hadoop.hbase.regionserver.HStoreFile.MAJOR_COMPACTION_KEY;
 import static org.apache.hadoop.hbase.util.ConcurrentMapUtils.computeIfAbsent;
 
@@ -39,6 +41,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -2438,6 +2442,85 @@ public class HRegion implements HeapSize, PropagatingConfigurationObserver, Regi
         } else {
           specificStoresToFlush = flushPolicy.selectStoresToFlush();
         }
+
+        /** trying to get all cells from the store**/
+//        for (HStore store: specificStoresToFlush) {
+//          String cfName = store.getColumnFamilyName();
+//          if (!cfName.equals("cf1")) {
+//            continue;
+//          }
+//          LOG.info("trying to group: " + cfName);
+//          DefaultMemStore memStore = (DefaultMemStore)store.memstore;
+//          List<Segment> segments = memStore.getSegmentsForGrouping();
+//          List<CellSet> cellSets = new ArrayList<>();
+//
+//
+//          for (Segment segment:segments) {
+//            cellSets.add(segment.getCellSet());
+//          }
+//
+//          /** build bitmap **/
+//          HashMap<Long, HashMap<String,String>> valueMap = new LinkedHashMap<>();
+//          HashSet<String> qualifiers = new LinkedHashSet<>();
+//
+//          for (Cell cell: cellSets.get(0)) {
+//            long key =  Long.parseLong(new String(cell.getRowArray()));
+//            String value = new String(cell.getValueArray());
+//            String qualifier = new String(cell.getQualifierArray());
+//            qualifiers.add(qualifier);
+//
+//            if (!valueMap.containsKey(key)) {
+//              valueMap.put(key, new LinkedHashMap<>());
+//            }
+//            valueMap.get(key).put(qualifier, value);
+//          }
+//
+//          /** active table data **/
+//          for (Cell cell: cellSets.get(1)) {
+//            long key =  Long.parseLong(new String(cell.getRowArray()));
+//            String value = new String(cell.getValueArray());
+//            String qualifier = new String(cell.getQualifierArray());
+//            qualifiers.add(qualifier);
+//            if (!valueMap.containsKey(key)) {
+//              valueMap.put(key, new HashMap<>());
+//            }
+//            valueMap.get(key).put(qualifier, value);
+//          }
+//
+//          /** convert to datalist and schemalist**/
+//          ArrayList<String> schemas = new ArrayList<>(qualifiers);
+//          System.out.println(schemas);
+//
+//          ArrayList<ArrayList<Integer>> dataList= new ArrayList<>();
+//          ArrayList<Long> timestampList = new ArrayList<>();
+//
+//          for (int idx = 0; idx < schemas.size(); idx++) {
+//            dataList.add(new ArrayList<>());
+//          }
+//          Iterator iter = valueMap.entrySet().iterator();
+//          while (iter.hasNext()) {
+//            Map.Entry entry = (Map.Entry) iter.next();
+//            Long key = (Long)entry.getKey();
+//            HashMap<String,String> val = (HashMap<String,String>)entry.getValue();
+//            timestampList.add(key);
+//
+//            for (int idx = 0; idx < schemas.size(); idx++) {
+//              if (val.containsKey(schemas.get(idx))) {
+//                if (val.get(schemas.get(idx)).equals("NULL") || val.get(schemas.get(idx)).equals("")) {
+//                  dataList.get(idx).add(0);
+//                } else {
+//                  dataList.get(idx).add(1);
+//                }
+//              } else {
+//                dataList.get(idx).add(0);
+//              }
+//            }
+//          }
+//          /**perform our grouping algorithm**/
+//          grouping(dataList, schemas);
+//          groupingAppr(dataList, schemas, timestampList);
+//        }
+
         FlushResultImpl fs =
           internalFlushcache(specificStoresToFlush, status, writeFlushRequestWalMarker, tracker);
 
